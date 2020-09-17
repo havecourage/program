@@ -6,4 +6,5 @@ int main()
     greeting();
     hello();
     printf("PATH=%s", getenv("PATH"));
+    content();
 }
