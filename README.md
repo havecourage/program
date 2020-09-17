@@ -7,7 +7,9 @@
         sac软件还没有安装（当然也包括cps编译的gsac）
 
 
-学术问题：receiver function（接收函数）是个什么？
+学术问题：
+
+        receiver function（接收函数）是个什么？
 
          高斯滤波器
 
