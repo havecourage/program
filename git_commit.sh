@@ -3,7 +3,7 @@
 #向脚本之中加入参数，参数为提交之时所要添加的信息
 #git init
 git add .
-git commit -m $1
+git commit -m "$1"
 ##这里本来是想要运行脚本的时候将信息作为输入来运行的，但是出现了问题：
 #输入sh git_commit.sh "2020.09.18 Second commit"之后出现如下报错:
 ##root@DESKTOP-D6FCGOJ:/mnt/e/Rodalph/program# sh git_commit.sh "2020.09.18 Second commit"
