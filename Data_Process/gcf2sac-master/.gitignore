@@ -1,0 +1,7 @@
+.settings
+*.swp
+*.pyc
+*~
+Test
+test*
+wget*

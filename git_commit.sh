@@ -2,7 +2,7 @@
 #ssh连接好难配置，还是使用http连接吧
 #向脚本之中加入参数，参数为提交之时所要添加的信息
 #git init
-git add .
+git add . #./* ./*/*
 git commit -m "$1"
 ##这里本来是想要运行脚本的时候将信息作为输入来运行的，但在初始版本出现了问题：
 #初始版本为：git commit -m $1
@@ -16,7 +16,7 @@ git commit -m "$1"
 
 
 #git remote add origin https://github.com/havecourage/-.git
-git push -u origin master
+git push #-u origin master
 
 #    git config --global user.name "Your Name"
 #    git config --global user.email you@example.com
