@@ -1,0 +1,22 @@
+hangtian_plot=data_transform(2766295:8419058,1);
+hangtian_plot_time=(2766295:8419058)*0.001;
+
+xuan_r2_plot=rot_data_r2_N;
+xuan_r2_time=(2766295+(1:size(xuan_r2_plot)))*0.002;
+plot(xuan_r2_time,xuan_r2_plot)
+
+
+
+subplot(311)
+plot(xuan_r2_time,xuan_r2_plot,'b')
+ylim([-1 1])
+subplot(312)
+plot(hangtian_plot_time,hangtian_plot,'r')
+ylim([-1 1])
+subplot(313)
+plot(xuan_r2_time,xuan_r2_plot,'b')
+ylim([-1 1])
+hold on
+plot(hangtian_plot_time,hangtian_plot,'r')
+ylim([-1 1])
+hold off
