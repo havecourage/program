@@ -1,0 +1,6 @@
+#!/usr/bin/expect
+set timeout 10
+spawn ssh node02
+expect "*password*"
+send "c6Civ%Ft/r"
+expect eof
