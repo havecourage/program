@@ -1,0 +1,208 @@
+% 使用ctexart文档类（用XeLaTeX编译，直接支持中文）
+\documentclass[fontset=windows]{ctexart}
+
+% 设置页面大小
+\usepackage{geometry}
+\geometry{% 
+  paper=a4paper,
+  top=2.5cm,
+  bottom=2.1cm,
+  left=1.0cm,
+  right=1.0cm,
+  headheight=0.0cm,
+  headsep=0.0cm,
+  footskip=0.0cm,
+} 
+
+% 载入拼音宏包
+\usepackage{xpinyin}
+% 设置拼音与正文字号比例
+\xpinyinsetup{ratio=0.8}
+
+% 从CSV文件生成表格宏包
+\usepackage{pgfplotstable}
+% 多行宏包
+\usepackage{multirow}
+% 跨页表格宏包
+\usepackage{longtable}
+
+% 能够在tabular里使用循环的宏包
+\usepackage{xinttools}
+
+% 考勤表基本信息宏
+\def\semester{2019秋}
+\def\coursename{C语言程序设计}
+\def\courseid{1091102}
+\def\courseidx{2}
+\def\teacher{元始天尊}
+
+% 设置多音字的首选读音
+\setpinyin{解}{xie4}
+\setpinyin{重}{chong2}
+\setpinyin{区}{ou1}
+\setpinyin{仇}{qiu2}
+\setpinyin{秘}{bi4}
+\setpinyin{冼}{xian3}
+\setpinyin{折}{she4}
+\setpinyin{单}{shan4}
+\setpinyin{朴}{piao2}
+\setpinyin{翟}{zhai2}
+\setpinyin{查}{zha1}
+\setpinyin{盖}{ge3}
+
+% 定义生成姓名加注拼音的点名册表格命令
+% 该命令有1个数据文件名参数，默认值取namelist.csv
+% =========================================================
+% 该文件第1行是标题后续各行是具体数据
+% 前3列分别是学号、姓名、班级，最后一列是备注，建议不要更改标题名称
+% 从namelist.csv文件中中数据可以为空，但逗号不能省略
+% 如下是namelist.csv文件结构示例：
+% ﻿stno,name,class,1,2,3,4,5,6,7,8,9,10,11,12,notes
+% 2019012800,许涵启,计算机类1905,,,,,,,,,,,,,
+% ......
+% 2019012830,云睿航,计算机类1905,,,,,,,,,,,,,
+% ,,,,,,,,,,,,,,,
+% ......
+% ,,,,,,,,,,,,,,,
+% =========================================================
+\newcommand{\xpynamelist}[1][namelist.csv]{
+  % 数据格式设置
+  \pgfplotstableset{
+    col sep=comma,
+    header=true,
+    %font=\small, % 更改表格字体
+  }
+  % 也可以提前读入文件，存入\loadedtable命名的内部数据结构中
+  %\pgfplotstableread{namelist.csv}{\loadedtable}
+  % 表格行高
+  \def\arraystretch{0.8} % 更改表格行高
+  \setlength\extrarowheight{5pt} % 更改表格行内高度
+  % 定义局中对齐固定宽度的列格式C
+  \newcolumntype{C}{>{\centering\arraybackslash}p{3mm}}
+  % 排版表格
+  \centering
+  \pgfplotstabletypeset[
+    % 使用longtable处理跨页表格
+    begin table=\begin{longtable},
+    end table=\end{longtable},
+    % 各列格式设置为C格式(固定宽度，局中)
+    column type=|C,
+    % 表头设计
+    every head row/.style={
+      before row={
+        % \pgfplotstablecols为总列数
+        \multicolumn{\pgfplotstablecols}{c}{\bf\large \LaTeX{}通天大学\semester{}季学期学生课程考勤表}\\      
+        \multicolumn{\pgfplotstablecols}{l}{课程名称：
+          \coursename{}\hfill 课程代码：\courseid{}\hfill 课序号：
+          \courseidx{}\hfill 任课教师：\teacher{}}\\        
+        \hline
+        % 计算平时考勤登记列数
+        \pgfmathtruncatemacro{\len}{\pgfplotstablecols-4}
+        % 将平时考勤登记列数存入\colslen宏
+        \global\let\colslen\len
+        \multirow{2}{*}{序号}&\multirow{2}{*}{学号}&\multirow{2}{*}{姓名}&\multirow{2}{*}{班级}&\multicolumn{\colslen}{c|}{平时考勤}\\
+        \cline{5-\pgfplotstablecols}
+      },  
+      after row={        
+        % 生成跨页表头
+        \endfirsthead
+        %\multicolumn{\pgfplotstablecols}{l}{续前页}\\
+        \multicolumn{\pgfplotstablecols}{c}{\bf\large \LaTeX{}通天大学\semester{}季学期学生课程考勤表}\\      
+        \multicolumn{\pgfplotstablecols}{l}{课程名称：
+          \coursename{}\hfill 课程代码：\courseid{}\hfill 课序号：
+          \courseidx{}\hfill 任课教师：\teacher{}}\\
+        \hline
+        \multirow{2}{*}{序号}&\multirow{2}{*}{学号}&\multirow{2}{*}{姓名}&\multirow{2}{*}{班级}&\multicolumn{\colslen}{c|}{平时考
+          勤}\\
+        \cline{5-\pgfplotstablecols}
+        % 计算平时考勤登记列数
+        \pgfmathtruncatemacro{\repcols}{\pgfplotstablecols-5}
+        % 将平时考勤登记列数存入\colslen宏
+        \global\let\repcnt\repcols
+        % &&&&1&2&3&4&5&6&7&8&9&10&11&\repcnt&备注\\
+        % 循环产生跨页表头标题行
+        &&&&\xintiloop [1+1]
+          \xintiloopindex &
+          \ifnum\repcnt>\xintiloopindex\space
+        \repeat
+        备注\\
+        \hline
+        \endhead        
+        \multicolumn{\pgfplotstablecols}{|l|}{备注：出勤：$\surd$\ 缺勤：$\times$\ 迟
+          到：$\bigtriangleup$\ 早退：$\bigcirc$\ 事假：
+          $\bigtriangledown$\ 病假：$\oplus$}\\        
+        \hline
+        %\multicolumn{\pgfplotstablecols}{r}{续下页} \\
+        \endfoot
+        \endlastfoot
+      }, 
+    },
+    % 每行后画线
+    before row={\hline},
+    % 表尾设计
+    every last row/.style={
+      % 考勤标记
+      after row={
+        \hline
+        \multicolumn{\pgfplotstablecols}{|l|}{备注：出勤：$\surd$\ 缺勤：$\times$\ 迟
+          到：$\bigtriangleup$\ 早退：$\bigcirc$\ 事假：
+          $\bigtriangledown$\ 病假：$\oplus$}\\        
+        \hline
+      },
+    },
+    % 序号列
+    columns/idx/.style={string type,
+      column name={}, % 不输出标题名称
+      column type=|@{}c@{}, % 独立设置列格式
+    },
+    % 学号列
+    columns/stno/.style={string type,
+      column name={}, % 不输出标题名称
+      column type=|@{\hspace{0.2em}}c@{\hspace{0.2em}}, % 独立设置列格式
+    },
+    % 姓名列
+    columns/name/.style={string type,
+      column name={},  % 不输出标题名称
+      % 采用后处理方式加注拼音
+      postproc cell content/.append style={
+        /pgfplots/table/@cell content/.add={\begin{pinyinscope}}{\end{pinyinscope}},
+      },
+      column type=|@{\hspace{0.1em}}c@{\hspace{0.1em}}, % 独立设置列格式
+    },
+    % 班级列
+    columns/class/.style={string type,
+      column name={}, % 不输出标题名称
+      column type=|@{\hspace{0.1em}}c@{\hspace{0.2em}}, % 独立设置列格式
+    },
+    % 其它各列采用默认格式
+    % 备注列
+    columns/notes/.style={
+      column name={备注},
+      column type=|c|, % 独立设置列格式
+    },  
+  ]{#1}% 也可以使用提前读入的\loadedtable
+}
+
+\begin{document} %在document环境中撰写文档
+\pagestyle{empty}
+% 参数为默认值
+\xpynamelist
+
+% % 如果需要多个班级，请准备数据，
+% % 用\newpage分页后，复制以上代码排版并更换数据文件
+% \newpage
+% % 参数为学生名单数据文件
+% % 注意：由于有参数默认值，所以需要用方括号
+% \xpynamelist[namelist01.csv]
+
+% \newpage
+% % 参数为学生名单数据文件
+% % 注意：由于有参数默认值，所以需要用方括号
+% \xpynamelist[namelist02.csv]
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

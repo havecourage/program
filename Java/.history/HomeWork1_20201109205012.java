@@ -1,5 +1,6 @@
 import java.lang.Math;
 import java.io.*;
+import java.nio.file.Paths;
 
 public class HomeWork1 {
     public static void main(String[] args) throws IOException {
