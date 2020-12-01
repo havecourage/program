@@ -5,10 +5,5 @@ public class DataChange {
     public static void main() {
 
     }
-
-    public static void swap(double a, double b) {
-        double tp = a;
-        a = b;
-        b = tp;
-    }
+public static 
 }

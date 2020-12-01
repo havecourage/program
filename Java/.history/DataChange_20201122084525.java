@@ -6,7 +6,7 @@ public class DataChange {
 
     }
 
-    public static void swap(double a, double b) {
+    public static double swap(double a, double b) {
         double tp = a;
         a = b;
         b = tp;
